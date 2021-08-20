@@ -1,6 +1,40 @@
 const Generator = (function* () {})().constructor;
 const AsyncGenerator = (async function* () {})().constructor;
 
+interface Iterator<T> {
+  map<U>(mapperFn: (x: T) => U): Iterator<U, void, unknown>;
+  filter(filtererFn: (x: T) => boolean): Iterator<T, void, unknown>;
+  take(n: number): Iterator<T, void, unknown>;
+  drop(n: number): Iterator<T, void, unknown>;
+  entries(): Iterator<[number, T], void, unknown>;
+  asIndexedPairs(): Iterator<[number, T], void, unknown>;
+  flatMap<U>(mapperFn: (x: T) => Iterator<U>): Iterator<U, void, unknown>;
+  reduce<U>(reducerFn: (acc: U, x: T) => U, initialValue: U): U;
+  toArray(): T[];
+  forEach(fn: (x: T) => void): void;
+  some(fn: (x: T) => boolean): boolean;
+  every(fn: (x: T) => boolean): boolean;
+  find(fn: (x: T) => boolean): T | undefined;
+}
+
+interface AsyncIterator<T> {
+  map<U>(mapperFn: (x: T) => U): AsyncIterator<U, void, unknown>;
+  filter(filtererFn: (x: T) => boolean): AsyncIterator<T, void, unknown>;
+  take(n: number): AsyncIterator<T, void, unknown>;
+  drop(n: number): AsyncIterator<T, void, unknown>;
+  entries(): AsyncIterator<[number, T], void, unknown>;
+  asIndexedPairs(): AsyncIterator<[number, T], void, unknown>;
+  flatMap<U>(
+    mapperFn: (x: T) => AsyncIterator<U>,
+  ): AsyncIterator<U, void, unknown>;
+  reduce<U>(reducerFn: (acc: U, x: T) => U, initialValue: U): Promise<U>;
+  toArray(): Promise<T[]>;
+  forEach(fn: (x: T) => void): Promise<void>;
+  some(fn: (x: T) => boolean): Promise<boolean>;
+  every(fn: (x: T) => boolean): Promise<boolean>;
+  find(fn: (x: T) => boolean): Promise<T | undefined>;
+}
+
 if (!("map" in Generator.prototype)) {
   Generator.prototype.map = function* map<T, U>(
     this: Generator<T>,
