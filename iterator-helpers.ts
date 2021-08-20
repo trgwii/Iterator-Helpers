@@ -25,7 +25,7 @@ interface AsyncIterator<T> {
   entries(): AsyncIterator<[number, T], void, unknown>;
   asIndexedPairs(): AsyncIterator<[number, T], void, unknown>;
   flatMap<U>(
-    mapperFn: (x: T) => AsyncIterator<U>,
+    mapperFn: (x: T) => IterableIterator<U> | AsyncIterableIterator<U>,
   ): AsyncIterator<U, void, unknown>;
   reduce<U>(reducerFn: (acc: U, x: T) => U, initialValue: U): Promise<U>;
   toArray(): Promise<T[]>;
@@ -179,7 +179,7 @@ if (!("asIndexedPairs" in AsyncGenerator.prototype)) {
 if (!("flatMap" in Generator.prototype)) {
   Generator.prototype.flatMap = function* flatMap<T, U>(
     this: Generator<T>,
-    mapperFn: (x: T) => Generator<U>,
+    mapperFn: (x: T) => IterableIterator<U>,
   ) {
     for (const x of this) {
       yield* mapperFn(x);
@@ -190,7 +190,7 @@ if (!("flatMap" in Generator.prototype)) {
 if (!("flatMap" in AsyncGenerator.prototype)) {
   AsyncGenerator.prototype.flatMap = async function* flatMap<T, U>(
     this: AsyncGenerator<T>,
-    mapperFn: (x: T) => AsyncGenerator<U>,
+    mapperFn: (x: T) => IterableIterator<U> | AsyncIterableIterator<U>,
   ) {
     for await (const x of this) {
       yield* mapperFn(x);
